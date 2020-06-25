@@ -81,14 +81,62 @@ static void _gtpv1_tun_recv_cb(short when, ogs_socket_t fd, void *data)
     ogs_pkbuf_free(recvbuf);
 }
 
+static uint16_t get_gtpu_header_len(ogs_pkbuf_t *pkbuf)
+{
+    ogs_gtp_header_t *gtp_h = NULL;
+    uint8_t *ext_h = NULL;
+    uint16_t len = 0;
+
+    ogs_assert(pkbuf);
+    ogs_assert(pkbuf->data);
+
+    gtp_h = (ogs_gtp_header_t *)pkbuf->data;
+
+    len = OGS_GTPV1U_HEADER_LEN;
+
+    if (gtp_h->flags & OGS_GTPU_FLAGS_E) {
+
+#define OGS_GTPV1U_EXTENSION_HEADER_TYPE_LEN 4
+        len += OGS_GTPV1U_EXTENSION_HEADER_TYPE_LEN;
+
+        /*
+         * TS29.281
+         * 5.2.1 General format of the GTP-U Extension Header
+         *
+         * If no such Header follows,
+         * then the value of the Next Extension Header Type shall be 0. */
+        while (*(ext_h = (((uint8_t *)gtp_h) + len - 1))) {
+        /*
+         * The length of the Extension header shall be defined
+         * in a variable length of 4 octets, i.e. m+1 = n*4 octets,
+         * where n is a positive integer.
+         */
+            len += (*(++ext_h)) * 4;
+        }
+    } else if (gtp_h->flags & (OGS_GTPU_FLAGS_S|OGS_GTPU_FLAGS_PN)) {
+        /*
+         * If and only if one or more of these three flags are set,
+         * the fields Sequence Number, N-PDU and Extension Header
+         * shall be present. The sender shall set all the bits of
+         * the unused fields to zero. The receiver shall not evaluate
+         * the unused fields.
+         * For example, if only the E flag is set to 1, then
+         * the N-PDU Number and Sequence Number fields shall also be present,
+         * but will not have meaningful values and shall not be evaluated.
+         */
+        len += 4;
+    }
+
+    return len;
+}
+
 static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
 {
     int rv;
     ssize_t size;
     ogs_pkbuf_t *pkbuf = NULL;
     uint32_t len = OGS_GTPV1U_HEADER_LEN;
-    uint32_t extension_header_type = 0;
-    ogs_5gs_gtp_header_t *gtp_h = NULL;
+    ogs_gtp_header_t *gtp_h = NULL;
     struct ip *ip_h = NULL;
 
     uint32_t teid;
@@ -114,25 +162,48 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
     ogs_assert(pkbuf);
     ogs_assert(pkbuf->len);
 
-    gtp_h = (ogs_5gs_gtp_header_t *)pkbuf->data;
+    gtp_h = (ogs_gtp_header_t *)pkbuf->data;
     teid = be32toh(gtp_h->teid);
 
     ogs_debug("[UPF] RECV GPU-U from gNB : TEID[0x%x]", teid);
 
-    /* Remove GTP header and send packets to TUN interface */
-    if (gtp_h->seqence_number) len += 4;
-    if (gtp_h->next_extension) {
-        extension_header_type = be32toh(gtp_h->extension_header.type);
-        switch (extension_header_type) {
-        case OGS_GTP_EXTENSION_HEADER_TYPE_PDU_SESSION_CONTAINER:
-            len += 8; /* TODO : QoS QFI */
-            break;
-        default:
+    if (gtp_h->version != OGS_GTP_VERSION_1) {
+        ogs_error("[DROP] Invalid GTPU version [%d]", gtp_h->version);
+        goto cleanup;
+    }
+
+#if 0
+    if (gtp_h->type != OGS_GTPU_MSGTYPE_GPDU) {
+        ogs_error("[DROP] Invalid GTPU Type [%d]", gtp_h->type);
+        goto cleanup;
+    }
+#endif
+
+    if (gtp_h->flags & OGS_GTPU_FLAGS_E) {
+        ogs_gtp_extension_header_t *extension_header =
+            (ogs_gtp_extension_header_t *)(pkbuf->data + OGS_GTPV1U_HEADER_LEN);
+        ogs_assert(extension_header);
+        if (extension_header->type !=
+                OGS_GTP_EXTENSION_HEADER_TYPE_PDU_SESSION_CONTAINER) {
             ogs_log_hexdump(OGS_LOG_ERROR, pkbuf->data, pkbuf->len);
-            ogs_error("[DROP] Cannot decode extension header");
+            ogs_error("[DROP] Invalid extension header type [%d]",
+                    extension_header->type);
             goto cleanup;
         }
+
+        if (extension_header->pdu_type !=
+            OGS_GTP_EXTENSION_HEADER_PDU_TYPE_UL_PDU_SESSION_INFORMATION) {
+            ogs_log_hexdump(OGS_LOG_ERROR, pkbuf->data, pkbuf->len);
+            ogs_error("[DROP] Invalid PDU Type in Extension header [%d]",
+                    extension_header->pdu_type);
+            goto cleanup;
+        }
+
+        ogs_debug("QFI = %d", extension_header->qos_flow_identifier);
     }
+
+    /* Remove GTP header and send packets to TUN interface */
+    len = get_gtpu_header_len(pkbuf);
     ogs_assert(ogs_pkbuf_pull(pkbuf, len));
 
     ip_h = (struct ip *)pkbuf->data;

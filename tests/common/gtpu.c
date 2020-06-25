@@ -132,7 +132,7 @@ int test_gtpu_build_ping(ogs_pkbuf_t **sendbuf,
     gtp_h->type = OGS_GTPU_MSGTYPE_GPDU;
     gtp_h->teid = htobe32(sess->upf_n3_teid);
     gtp_h->extension_header.type =
-        htobe32(OGS_GTP_EXTENSION_HEADER_TYPE_PDU_SESSION_CONTAINER);
+        OGS_GTP_EXTENSION_HEADER_TYPE_PDU_SESSION_CONTAINER;
     gtp_h->extension_header.len = 1;
     gtp_h->extension_header.pdu_type =
         OGS_GTP_EXTENSION_HEADER_PDU_TYPE_UL_PDU_SESSION_INFORMATION;
