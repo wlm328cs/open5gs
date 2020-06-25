@@ -43,25 +43,6 @@ typedef struct ogs_gtp_extension_header_s {
     uint8_t next_type;
 } __attribute__ ((packed)) ogs_gtp_extension_header_t;
 
-#define OGS_5GS_GTP_HEADER_LEN 16
-typedef struct ogs_5gs_gtp_header_s {
-    union {
-        struct {
-        ED6(uint8_t version:3;,
-            uint8_t protocol_type:1;,
-            uint8_t reserved:1;,
-            uint8_t next_extension:1;,
-            uint8_t seqence_number:1;,
-            uint8_t n_pdu_number:1;)
-        };
-        uint8_t flags;
-    };
-    uint8_t type;
-    uint16_t length;
-    uint32_t teid;
-    ogs_gtp_extension_header_t extension_header;
-} __attribute__ ((packed)) ogs_5gs_gtp_header_t;
-
 /* 8.4 Cause */
 #define OGS_GTP_CAUSE_LOCAL_DETACH  2
 #define OGS_GTP_CAUSE_COMPLETE_DETACH_3
