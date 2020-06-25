@@ -452,6 +452,9 @@ ogs_pkbuf_t *testgmm_build_authentication_failure(
 
     uint8_t ak[OGS_AK_LEN];
     uint8_t sqn_ms[OGS_SQN_LEN] = "\x00\x00\x11\x22\x33\x44";
+#if 0
+    uint8_t sqn_ms[OGS_SQN_LEN] = "\x00\x00\x00\x00\x1f\x60"; /* Issues 482 */
+#endif
     uint8_t mac_s[OGS_MAC_S_LEN];
     uint8_t amf[2] = { 0, 0 };
     uint8_t auts[OGS_AUTS_LEN];
