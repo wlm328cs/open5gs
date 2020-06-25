@@ -402,6 +402,7 @@ typedef struct ogs_gtp_header_s {
 /* GTU-U flags */
 #define OGS_GTPU_FLAGS_PN                       0x1
 #define OGS_GTPU_FLAGS_S                        0x2
+#define OGS_GTPU_FLAGS_E                        0x4
         uint8_t flags;
     };
     uint8_t type;

@@ -20,7 +20,7 @@
 /*******************************************************************************
  * This file had been created by gtp-tlv.py script v0.1.0
  * Please do not modify this file but regenerate it via script.
- * Created on: 2020-06-25 00:24:05.831453 by acetcom
+ * Created on: 2020-06-25 16:26:49.728782 by acetcom
  * from 29274-d80.docx
  ******************************************************************************/
 
@@ -50,6 +50,7 @@ typedef struct ogs_gtp_header_s {
 /* GTU-U flags */
 #define OGS_GTPU_FLAGS_PN                       0x1
 #define OGS_GTPU_FLAGS_S                        0x2
+#define OGS_GTPU_FLAGS_E                        0x4
         uint8_t flags;
     };
     uint8_t type;
