@@ -439,7 +439,7 @@ ogs_pkbuf_t *testgmm_build_authentication_response(test_ue_t *test_ue)
 }
 
 ogs_pkbuf_t *testgmm_build_authentication_failure(
-        test_ue_t *test_ue, ogs_nas_5gmm_cause_t gmm_cause)
+        test_ue_t *test_ue, ogs_nas_5gmm_cause_t gmm_cause, uint64_t sqn_ms)
 
 {
     ogs_nas_5gs_message_t message;
@@ -451,10 +451,11 @@ ogs_pkbuf_t *testgmm_build_authentication_failure(
             &authentication_failure->authentication_failure_parameter;
 
     uint8_t ak[OGS_AK_LEN];
-    uint8_t sqn_ms[OGS_SQN_LEN] = "\x00\x00\x11\x22\x33\x44";
 #if 0
+    uint8_t sqn_ms[OGS_SQN_LEN] = "\x00\x00\x11\x22\x33\x44";
     uint8_t sqn_ms[OGS_SQN_LEN] = "\x00\x00\x00\x00\x1f\x60"; /* Issues 482 */
 #endif
+    uint8_t sqn[OGS_SQN_LEN];
     uint8_t mac_s[OGS_MAC_S_LEN];
     uint8_t amf[2] = { 0, 0 };
     uint8_t auts[OGS_AUTS_LEN];
@@ -476,10 +477,11 @@ ogs_pkbuf_t *testgmm_build_authentication_failure(
         milenage_f2345(test_ue->opc, test_ue->k, test_ue->rand,
                 NULL, NULL, NULL, NULL, ak);
 
+        ogs_uint64_to_buffer(sqn_ms, 5, sqn);
         milenage_f1(test_ue->opc, test_ue->k, test_ue->rand,
-                sqn_ms, amf, NULL, auts + OGS_SQN_LEN);
+                sqn, amf, NULL, auts + OGS_SQN_LEN);
         for (i = 0; i < OGS_SQN_LEN; i++)
-            auts[i] = sqn_ms[i] ^ ak[i];
+            auts[i] = sqn[i] ^ ak[i];
 
         authentication_failure_parameter->length = OGS_AUTS_LEN;
         memcpy(authentication_failure_parameter->auts, auts,

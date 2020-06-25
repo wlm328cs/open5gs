@@ -197,7 +197,7 @@ static void test1_func(abts_case *tc, void *data)
 
     /* Send Authentication failure - SYNCH failure */
     gmmbuf = testgmm_build_authentication_failure(
-            &test_ue, OGS_5GMM_CAUSE_SYNCH_FAILURE);
+            &test_ue, OGS_5GMM_CAUSE_SYNCH_FAILURE, 0x000011223344);
     ABTS_PTR_NOTNULL(tc, gmmbuf);
     sendbuf = testngap_build_uplink_nas_transport(&test_ue, gmmbuf);
     ABTS_PTR_NOTNULL(tc, sendbuf);
@@ -211,7 +211,7 @@ static void test1_func(abts_case *tc, void *data)
 
     /* Send Authentication failure - MAC failure */
     gmmbuf = testgmm_build_authentication_failure(
-            &test_ue, OGS_5GMM_CAUSE_MAC_FAILURE);
+            &test_ue, OGS_5GMM_CAUSE_MAC_FAILURE, 0);
     ABTS_PTR_NOTNULL(tc, gmmbuf);
     sendbuf = testngap_build_uplink_nas_transport(&test_ue, gmmbuf);
     ABTS_PTR_NOTNULL(tc, sendbuf);
