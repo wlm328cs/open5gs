@@ -145,12 +145,13 @@ int test_gtpu_build_ping(ogs_pkbuf_t **sendbuf,
         struct ip *ip_h = NULL;
         struct icmp *icmp_h = NULL;
 
-#define GTP_EXTENSION_HEADER_SIZE 8
         gtp_h->length = htobe16(
-                sizeof *ip_h + ICMP_MINLEN + GTP_EXTENSION_HEADER_SIZE);
+                sizeof *ip_h + ICMP_MINLEN +
+                OGS_GTPV1U_EXTENSION_HEADER_LEN + ext_h->len * 4);
 
         ip_h = (struct ip *)(pkbuf->data +
-                OGS_GTPV1U_HEADER_LEN + GTP_EXTENSION_HEADER_SIZE);
+                OGS_GTPV1U_HEADER_LEN +
+                OGS_GTPV1U_EXTENSION_HEADER_LEN + ext_h->len * 4);
         icmp_h = (struct icmp *)((uint8_t *)ip_h + sizeof *ip_h);
 
         ip_h->ip_v = 4;

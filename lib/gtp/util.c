@@ -35,8 +35,7 @@ int ogs_gtpu_header_len(ogs_pkbuf_t *pkbuf)
 
     if (gtp_h->flags & OGS_GTPU_FLAGS_E) {
 
-#define OGS_GTPV1U_EXTENSION_HEADER_TYPE_LEN 4
-        len += OGS_GTPV1U_EXTENSION_HEADER_TYPE_LEN;
+        len += OGS_GTPV1U_EXTENSION_HEADER_LEN;
         if (pkbuf->len < len) return -1;
 
         /*
