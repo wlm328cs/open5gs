@@ -477,7 +477,7 @@ ogs_pkbuf_t *testgmm_build_authentication_failure(
         milenage_f2345(test_ue->opc, test_ue->k, test_ue->rand,
                 NULL, NULL, NULL, NULL, ak);
 
-        ogs_uint64_to_buffer(sqn_ms, 5, sqn);
+        ogs_uint64_to_buffer(sqn_ms, 6, sqn);
         milenage_f1(test_ue->opc, test_ue->k, test_ue->rand,
                 sqn, amf, NULL, auts + OGS_SQN_LEN);
         for (i = 0; i < OGS_SQN_LEN; i++)
