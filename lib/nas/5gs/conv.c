@@ -135,6 +135,16 @@ void ogs_nas_5gs_nas_guti_to_mobilty_identity_guti(
 
     memset(mobile_identity_guti, 0, sizeof(*mobile_identity_guti));
 
+    /*
+     * TS24.501
+     * 9.11.3.4 5GS mobile identity
+     * Figure 9.11.3.4.1 5GS mobile identity IE for type of identity "5G-GUTI"
+     *
+     * 1 1 1 1 0 x x x
+     *
+     * So, supi_format location should be 0xf
+     */
+    mobile_identity_guti->h.supi_format = 0xf;
     mobile_identity_guti->h.type = OGS_NAS_5GS_MOBILE_IDENTITY_GUTI;
 
     memcpy(&mobile_identity_guti->nas_plmn_id,
