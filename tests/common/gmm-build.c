@@ -252,6 +252,21 @@ ogs_pkbuf_t *testgmm_build_service_request(
     ogs_assert(test_ue->nas_guti.m_tmsi);
     memset(&mobile_identity_s_tmsi, 0, sizeof(mobile_identity_s_tmsi));
 
+    /*
+     * TS24.501
+     * 9.11.3.4 5GS mobile identity
+     * Figure 9.11.3.4.5 5GS mobile identity IE for type of identity "5G-S-TMSI"
+     *
+     * Octet 1 : 5GS mobile identity IEI
+     * Octet 2-3 : Length of 5GS mobile identity contents
+     * Octet 4 : 1 1 1 1 0 1 0 0
+     *
+     * <Octet 4>
+     *   h.supi_format = 0xf (1 1 1 1)
+     *   h.odd_even = 0 (Spare 0)
+     *   h.type = 1 0 0 (Type of identity : 5G-S-TMSI)
+     */
+    mobile_identity_s_tmsi.h.supi_format = 0xf;
     mobile_identity_s_tmsi.h.type = OGS_NAS_5GS_MOBILE_IDENTITY_S_TMSI;
     mobile_identity_s_tmsi.m_tmsi = htobe32(test_ue->nas_guti.m_tmsi);
     mobile_identity_s_tmsi.set1 = test_ue->nas_guti.amf_id.set1;
