@@ -167,6 +167,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
     if (len < 0) {
         ogs_error("[DROP] Cannot decode GTPU packet");
         ogs_log_hexdump(OGS_LOG_ERROR, pkbuf->data, pkbuf->len);
+        goto cleanup;
     }
     ogs_assert(ogs_pkbuf_pull(pkbuf, len));
 
