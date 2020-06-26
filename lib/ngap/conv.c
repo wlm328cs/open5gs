@@ -32,6 +32,7 @@ void ogs_ngap_uint32_to_GNB_ID(uint32_t gnb_id, NGAP_GNB_ID_t *gNB_ID)
     bit_string->size = 3;
     bit_string->buf = CALLOC(bit_string->size, sizeof(uint8_t));
 
+    /* gNB ID : 22bit ~ 32bit */
     bit_string->buf[0] = gnb_id >> 16;
     bit_string->buf[1] = gnb_id >> 8;
     bit_string->buf[2] = (gnb_id & 0xff);
@@ -47,6 +48,7 @@ void ogs_ngap_GNB_ID_to_uint32(NGAP_GNB_ID_t *gNB_ID, uint32_t *gnb_id)
     buf = gNB_ID->choice.gNB_ID.buf;
     ogs_assert(buf);
 
+    /* gNB ID : 22bit ~ 32bit */
     *gnb_id = (buf[0] << 16) + (buf[1] << 8) + buf[2];
 }
 
@@ -147,7 +149,8 @@ void ogs_ngap_ASN_to_nr_cgi(NGAP_NR_CGI_t *nR_CGI, ogs_nr_cgi_t *nr_cgi)
     memcpy(&nr_cgi->plmn_id, nR_CGI->pLMNIdentity.buf, OGS_PLMN_ID_LEN);
 
     /* CellIdentity : 36bit */
-    nr_cgi->cell_id = (ogs_buffer_to_uint64(nR_CGI->nRCellIdentity.buf, 5) >> 4);
+    nr_cgi->cell_id =
+        (ogs_buffer_to_uint64(nR_CGI->nRCellIdentity.buf, 5) >> 4);
 }
 
 void ogs_ngap_5gs_tai_to_ASN(ogs_5gs_tai_t *tai, NGAP_TAI_t *tAI)

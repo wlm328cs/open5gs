@@ -169,7 +169,7 @@ void ngap_handle_ng_setup_request(amf_gnb_t *gnb, ogs_ngap_message_t *message)
     }
 
     ogs_ngap_GNB_ID_to_uint32(&globalGNB_ID->gNB_ID, &gnb_id);
-    ogs_debug("    IP[%s] GNB_ID[%x]", OGS_ADDR(gnb->addr, buf), gnb_id);
+    ogs_debug("    IP[%s] GNB_ID[0x%x]", OGS_ADDR(gnb->addr, buf), gnb_id);
 
     if (PagingDRX)
         ogs_debug("    PagingDRX[%ld]", *PagingDRX);

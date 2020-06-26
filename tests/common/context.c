@@ -65,7 +65,7 @@ static int test_context_validation(void)
 
     memcpy(&test_self()->nr_cgi.plmn_id, &test_self()->tai.plmn_id,
             OGS_PLMN_ID_LEN);
-    test_self()->nr_cgi.cell_id = 1;
+    test_self()->nr_cgi.cell_id = 0x40001;
 
     return OGS_OK;
 }
