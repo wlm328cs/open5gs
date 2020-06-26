@@ -118,6 +118,9 @@ static void test1_func(abts_case *tc, void *data)
 
     test_ue_set_mobile_identity_suci(&test_ue, &mobile_identity_suci, 13);
 
+    memset(&test_ue.mobile_identity_imeisv, 0,
+            sizeof(ogs_nas_mobile_identity_imeisv_t));
+
     test_ue.nas.access_type = OGS_ACCESS_TYPE_3GPP;
     test_ue.abba_len = 2;
 
@@ -581,6 +584,9 @@ static void test2_func(abts_case *tc, void *data)
 
     test_ue_set_mobile_identity_suci(&test_ue, &mobile_identity_suci, 13);
 
+    memset(&test_ue.mobile_identity_imeisv, 0,
+            sizeof(ogs_nas_mobile_identity_imeisv_t));
+
     test_ue.nas.access_type = OGS_ACCESS_TYPE_3GPP;
     test_ue.abba_len = 2;
 
@@ -889,6 +895,9 @@ static void test3_func(abts_case *tc, void *data)
     mobile_identity_suci.scheme_output[4] = 0x90;
 
     test_ue_set_mobile_identity_suci(&test_ue, &mobile_identity_suci, 13);
+
+    memset(&test_ue.mobile_identity_imeisv, 0,
+            sizeof(ogs_nas_mobile_identity_imeisv_t));
 
     test_ue.nas.access_type = OGS_ACCESS_TYPE_3GPP;
     test_ue.abba_len = 2;
@@ -1283,6 +1292,9 @@ static void test4_func(abts_case *tc, void *data)
     mobile_identity_suci.scheme_output[4] = 0x90;
 
     test_ue_set_mobile_identity_suci(&test_ue, &mobile_identity_suci, 13);
+
+    memset(&test_ue.mobile_identity_imeisv, 0,
+            sizeof(ogs_nas_mobile_identity_imeisv_t));
 
     test_ue.nas.access_type = OGS_ACCESS_TYPE_3GPP;
     test_ue.abba_len = 2;
