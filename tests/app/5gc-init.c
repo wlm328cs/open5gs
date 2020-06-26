@@ -47,10 +47,12 @@ int app_initialize(const char *const argv[])
         argv_out[i] = NULL;
     }
 
+#if 0
     if (ogs_config()->parameter.no_nrf == 0)
         nrf_thread = test_child_create("nrf", argv_out);
     if (ogs_config()->parameter.no_amf == 0)
         amf_thread = test_child_create("amf", argv_out);
+#endif
     if (ogs_config()->parameter.no_ausf == 0)
         ausf_thread = test_child_create("ausf", argv_out);
     if (ogs_config()->parameter.no_udm == 0)
@@ -70,10 +72,14 @@ void app_terminate(void)
     if (smf_thread) ogs_thread_destroy(smf_thread);
     if (udm_thread) ogs_thread_destroy(udm_thread);
     if (ausf_thread) ogs_thread_destroy(ausf_thread);
+#if 0
     if (amf_thread) ogs_thread_destroy(amf_thread);
+#endif
     if (upf_thread) ogs_thread_destroy(upf_thread);
     if (udr_thread) ogs_thread_destroy(udr_thread);
+#if 0
     if (nrf_thread) ogs_thread_destroy(nrf_thread);
+#endif
 }
 
 void test_5gc_init(void)

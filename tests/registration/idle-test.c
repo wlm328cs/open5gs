@@ -1665,7 +1665,7 @@ static void test4_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, recvbuf);
     ogs_pkbuf_free(recvbuf);
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 200; i++) {
         /*
          * Send Service request Using UplinkNASTransport
          *  - Uplink Data Status
@@ -1713,7 +1713,7 @@ static void test4_func(abts_case *tc, void *data)
     test_ue.ran_ue_ngap_id = ran_ue_ngap_id;
     test_ue.amf_ue_ngap_id = amf_ue_ngap_id;
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 200; i++) {
         /*
          * Send Service request Using UplinkNASTransport
          *  - Uplink Data Status
@@ -1782,9 +1782,11 @@ abts_suite *test_idle(abts_suite *suite)
 {
     suite = ADD_SUITE(suite)
 
+#if 0
     abts_run_test(suite, test1_func, NULL);
     abts_run_test(suite, test2_func, NULL);
     abts_run_test(suite, test3_func, NULL);
+#endif
     abts_run_test(suite, test4_func, NULL);
 
     return suite;
