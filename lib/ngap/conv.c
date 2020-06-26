@@ -23,6 +23,8 @@ void ogs_ngap_uint32_to_GNB_ID(
         uint32_t gnb_id, uint8_t bitsize, NGAP_GNB_ID_t *gNB_ID)
 {
     BIT_STRING_t *bit_string = NULL;
+    uint64_t uint64 = 0;
+    char buf[16];
 
     ogs_assert(gNB_ID);
 
@@ -30,13 +32,12 @@ void ogs_ngap_uint32_to_GNB_ID(
     bit_string = &gNB_ID->choice.gNB_ID;
     ogs_assert(bit_string);
 
-    bit_string->size = 3;
-    bit_string->buf = CALLOC(bit_string->size, sizeof(uint8_t));
-
     /* gNB ID : 22bit ~ 32bit */
-    bit_string->buf[0] = gnb_id >> 16;
-    bit_string->buf[1] = gnb_id >> 8;
-    bit_string->buf[2] = (gnb_id & 0xff);
+    uint64 = gnb_id;
+    ogs_uint64_to_buffer(
+            uint64 << ((32 - bitsize) % 8), (bitsize + 7) / 8, buf);
+    ogs_asn_buffer_to_BIT_STRING(
+            buf, (bitsize + 7) / 8, (32 - bitsize) % 8, bit_string);
 }
 
 void ogs_ngap_GNB_ID_to_uint32(NGAP_GNB_ID_t *gNB_ID, uint32_t *gnb_id)
@@ -50,7 +51,8 @@ void ogs_ngap_GNB_ID_to_uint32(NGAP_GNB_ID_t *gNB_ID, uint32_t *gnb_id)
     ogs_assert(buf);
 
     /* gNB ID : 22bit ~ 32bit */
-    *gnb_id = (buf[0] << 16) + (buf[1] << 8) + buf[2];
+    *gnb_id = ogs_buffer_to_uint64(gNB_ID->choice.gNB_ID.buf,
+            gNB_ID->choice.gNB_ID.size) >> gNB_ID->choice.gNB_ID.bits_unused;
 }
 
 void ogs_ngap_uint8_to_AMFRegionID(

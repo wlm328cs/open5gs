@@ -1678,7 +1678,8 @@ void ngap_handle_gnb_configuration_transfer(
 
         target_gnb = amf_gnb_find_by_gnb_id(target_gnb_id);
         if (target_gnb == NULL) {
-            ogs_warn("RAN configuration transfer : cannot find target RAN-id[%d]",
+            ogs_warn("RAN configuration transfer : "
+                    "cannot find target RAN-id[%d]",
                     target_gnb_id);
             return;
         }
