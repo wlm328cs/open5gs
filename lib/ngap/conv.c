@@ -25,7 +25,7 @@ void ogs_ngap_uint32_to_GNB_ID(
     ogs_assert(gNB_ID);
 
     /* gNB ID : 22bit ~ 32bit */
-    ogs_asn_uint64_to_BIT_STRING(gnb_id, bitsize, &gNB_ID->choice.gNB_ID);
+    ogs_asn_uint32_to_BIT_STRING(gnb_id, bitsize, &gNB_ID->choice.gNB_ID);
     gNB_ID->present = NGAP_GNB_ID_PR_gNB_ID;
 }
 
@@ -35,7 +35,7 @@ void ogs_ngap_GNB_ID_to_uint32(NGAP_GNB_ID_t *gNB_ID, uint32_t *gnb_id)
     ogs_assert(gNB_ID);
 
     /* gNB ID : 22bit ~ 32bit */
-    ogs_asn_BIT_STRING_to_uint64(&gNB_ID->choice.gNB_ID, (uint64_t *)gnb_id);
+    ogs_asn_BIT_STRING_to_uint32(&gNB_ID->choice.gNB_ID, gnb_id);
 }
 
 void ogs_ngap_uint8_to_AMFRegionID(
