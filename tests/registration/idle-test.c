@@ -1782,11 +1782,9 @@ abts_suite *test_idle(abts_suite *suite)
 {
     suite = ADD_SUITE(suite)
 
-#if 0
     abts_run_test(suite, test1_func, NULL);
     abts_run_test(suite, test2_func, NULL);
     abts_run_test(suite, test3_func, NULL);
-#endif
     abts_run_test(suite, test4_func, NULL);
 
     return suite;
