@@ -276,8 +276,6 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(100);
-
     /* Send Registration complete */
     gmmbuf = testgmm_build_registration_complete(&test_ue);
     ABTS_PTR_NOTNULL(tc, gmmbuf);
@@ -307,13 +305,13 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
 
+    ogs_msleep(100);
+
     /* Send GTP-U ICMP Packet */
     rv = test_gtpu_build_ping(&sendbuf, &test_sess, "10.45.0.1");
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
     rv = testgnb_gtpu_send(gtpu, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
-
-    ogs_msleep(100);
 
     /* Send PDU session resource setup response */
     sendbuf = testngap_build_pdu_session_resource_setup_response(&test_sess);
@@ -337,11 +335,11 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, recvbuf);
     ogs_pkbuf_free(recvbuf);
 
+    ogs_msleep(100);
+
     /* Update Registration request type */
     test_ue.nas.registration.value =
         OGS_NAS_5GS_REGISTRATION_TYPE_MOBILITY_UPDATING;
-
-    ogs_msleep(100);
 
     /* Send Registration request : Uplink Data Status */
     test_ue.registration_request_type.integrity_protected = 0;
@@ -373,8 +371,6 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
-
-    ogs_msleep(100);
 
     /* Send GTP-U ICMP Packet */
     rv = test_gtpu_build_ping(&sendbuf, &test_sess, "10.45.0.1");
@@ -458,8 +454,6 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(100);
-
     /* Send Registration complete */
     gmmbuf = testgmm_build_registration_complete(&test_ue);
     ABTS_PTR_NOTNULL(tc, gmmbuf);
@@ -496,8 +490,6 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
-
-    ogs_msleep(100);
 
     /* Send GTP-U ICMP Packet */
     rv = test_gtpu_build_ping(&sendbuf, &test_sess, "10.45.0.1");

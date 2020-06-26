@@ -262,8 +262,6 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(100);
-
     /* Send Registration complete */
     gmmbuf = testgmm_build_registration_complete(&test_ue);
     ABTS_PTR_NOTNULL(tc, gmmbuf);
@@ -299,9 +297,9 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_gtpu_send(gtpu, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
+    /* Send PDU session resource setup response */
     ogs_msleep(100);
 
-    /* Send PDU session resource setup response */
     sendbuf = testngap_build_pdu_session_resource_setup_response(&test_sess);
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
@@ -1115,9 +1113,9 @@ static void test3_func(abts_case *tc, void *data)
     rv = testgnb_gtpu_send(gtpu, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
+    /* Send PDU session resource setup response */
     ogs_msleep(100);
 
-    /* Send PDU session resource setup response */
     sendbuf = testngap_build_pdu_session_resource_setup_response(&test_sess);
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
@@ -1592,12 +1590,12 @@ static void test4_func(abts_case *tc, void *data)
     testngap_recv(&test_ue, recvbuf);
 
     /* Send PDU session resource setup response */
+    ogs_msleep(100);
+
     sendbuf = testngap_build_pdu_session_resource_setup_response(&test_sess);
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
-
-    ogs_msleep(100);
 
     /* Send GTP-U ICMP Packet */
     rv = test_gtpu_build_ping(&sendbuf, &test_sess, "10.45.0.1");
