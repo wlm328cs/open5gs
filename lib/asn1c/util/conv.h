@@ -70,8 +70,12 @@ void ogs_asn_OCTET_STRING_to_uint32(
 
 void ogs_asn_buffer_to_OCTET_STRING(
         void *buf, int size, OCTET_STRING_t *octet_string);
+
 void ogs_asn_buffer_to_BIT_STRING(
         void *buf, int size, int unused, BIT_STRING_t *bit_string);
+void ogs_asn_uint64_to_BIT_STRING(
+        uint64_t uint64, uint8_t bitsize, BIT_STRING_t *bit_string);
+void ogs_asn_BIT_STRING_to_uint64(BIT_STRING_t *bit_string, uint64_t *uint64);
 
 int ogs_asn_BIT_STRING_to_ip(
         BIT_STRING_t *bit_string, ogs_ip_t *ip);
