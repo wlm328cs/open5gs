@@ -262,7 +262,7 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /* Send Registration complete */
     gmmbuf = testgmm_build_registration_complete(&test_ue);
@@ -299,7 +299,7 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_gtpu_send(gtpu, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /* Send PDU session resource setup response */
     sendbuf = testngap_build_pdu_session_resource_setup_response(&test_sess);
@@ -307,7 +307,7 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /* Receive GTP-U ICMP Packet */
     recvbuf = testgnb_gtpu_read(gtpu);
@@ -325,7 +325,7 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, recvbuf);
     ogs_pkbuf_free(recvbuf);
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /* Send De-registration request */
     gmmbuf = testgmm_build_de_registration_request(&test_ue, 1);
@@ -346,7 +346,7 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /********** Remove Subscriber in Database */
     doc = BCON_NEW("imsi", BCON_UTF8(test_ue.imsi));
