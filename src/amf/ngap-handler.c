@@ -1058,7 +1058,7 @@ void ngap_handle_ue_context_release_request(
 
     ran_ue = ran_ue_find_by_amf_ue_ngap_id(amf_ue_ngap_id);
     if (!ran_ue) {
-        ogs_error("No RAN UE Context : AMF_UE_NGAP_ID[%lld]",
+        ogs_warn("No RAN UE Context : AMF_UE_NGAP_ID[%lld]",
                 (long long)amf_ue_ngap_id);
         ngap_send_error_indication(gnb, NULL, &amf_ue_ngap_id,
                 NGAP_Cause_PR_radioNetwork,
