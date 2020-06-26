@@ -19,7 +19,8 @@
 
 #include "ogs-ngap.h"
 
-void ogs_ngap_uint32_to_GNB_ID(uint32_t gnb_id, NGAP_GNB_ID_t *gNB_ID)
+void ogs_ngap_uint32_to_GNB_ID(
+        uint32_t gnb_id, uint8_t bitsize, NGAP_GNB_ID_t *gNB_ID)
 {
     BIT_STRING_t *bit_string = NULL;
 

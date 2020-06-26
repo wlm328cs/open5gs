@@ -22,7 +22,7 @@
 static ogs_pkbuf_t *testngap_build_pdu_session_resource_response_trasfer(
         test_sess_t *sess);
 
-ogs_pkbuf_t *testngap_build_ng_setup_request(uint32_t gnb_id)
+ogs_pkbuf_t *testngap_build_ng_setup_request(uint32_t gnb_id, uint8_t bitsize)
 {
     ogs_pkbuf_t *pkbuf = NULL;
     int i, j;
@@ -63,7 +63,7 @@ ogs_pkbuf_t *testngap_build_ng_setup_request(uint32_t gnb_id)
     ogs_asn_buffer_to_OCTET_STRING(
             plmn_id, OGS_PLMN_ID_LEN, &globalGNB_ID->pLMNIdentity);
 
-    ogs_ngap_uint32_to_GNB_ID(gnb_id, &globalGNB_ID->gNB_ID);
+    ogs_ngap_uint32_to_GNB_ID(gnb_id, bitsize, &globalGNB_ID->gNB_ID);
 
     ie = CALLOC(1, sizeof(NGAP_NGSetupRequestIEs_t));
     ASN_SEQUENCE_ADD(&NGSetupRequest->protocolIEs, ie);
