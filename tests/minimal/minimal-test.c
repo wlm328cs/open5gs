@@ -120,6 +120,11 @@ static void test1_func(abts_case *tc, void *data)
 
     memset(&test_ue.mobile_identity_imeisv, 0,
             sizeof(ogs_nas_mobile_identity_imeisv_t));
+    test_ue.mobile_identity_imeisv.type = OGS_NAS_5GS_MOBILE_IDENTITY_IMEISV;
+    test_ue.mobile_identity_imeisv.odd_even = OGS_NAS_MOBILE_IDENTITY_EVEN;
+    test_ue.mobile_identity_imeisv.digit1 = 1;
+    test_ue.mobile_identity_imeisv.digit2 = 1;
+    test_ue.mobile_identity_imeisv.digit3 = 1;
 
     test_ue.nas.access_type = OGS_ACCESS_TYPE_3GPP;
     test_ue.abba_len = 2;
