@@ -555,7 +555,7 @@ ogs_pkbuf_t *ngap_build_initial_context_setup_request(
                 UERadioCapability);
     }
 
-    if (amf_ue->imeisv_len) {
+    if (amf_ue->masked_imeisv_len) {
         ie = CALLOC(1, sizeof(NGAP_InitialContextSetupRequestIEs_t));
         ASN_SEQUENCE_ADD(&InitialContextSetupRequest->protocolIEs, ie);
 
@@ -566,12 +566,10 @@ ogs_pkbuf_t *ngap_build_initial_context_setup_request(
 
         MaskedIMEISV = &ie->value.choice.MaskedIMEISV;
 
-        MaskedIMEISV->size = amf_ue->imeisv_len;
+        MaskedIMEISV->size = amf_ue->masked_imeisv_len;
         MaskedIMEISV->buf = CALLOC(MaskedIMEISV->size, sizeof(uint8_t));
         MaskedIMEISV->bits_unused = 0;
-        memcpy(MaskedIMEISV->buf, amf_ue->imeisv, MaskedIMEISV->size);
-        MaskedIMEISV->buf[5] = 0xff;
-        MaskedIMEISV->buf[6] = 0xff;
+        memcpy(MaskedIMEISV->buf, amf_ue->masked_imeisv, MaskedIMEISV->size);
     }
 
     if (gmmbuf) {

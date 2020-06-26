@@ -718,7 +718,9 @@ int gmm_handle_security_mode_complete(amf_ue_t *amf_ue,
             ogs_nas_imeisv_to_bcd(mobile_identity_imeisv, imeisv->length,
                     amf_ue->imeisv_bcd);
             ogs_nas_imeisv_bcd_to_buffer(amf_ue->imeisv_bcd,
-                    amf_ue->imeisv, &amf_ue->imeisv_len);
+                    amf_ue->masked_imeisv, &amf_ue->masked_imeisv_len);
+            amf_ue->masked_imeisv[5] = 0xff;
+            amf_ue->masked_imeisv[6] = 0xff;
             if (amf_ue->pei)
                 ogs_free(amf_ue->pei);
             amf_ue->pei = ogs_msprintf("imeisv-%s", amf_ue->imeisv_bcd);
