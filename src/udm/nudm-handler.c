@@ -152,7 +152,12 @@ bool udm_nudm_ueau_handle_get(udm_ue_t *udm_ue, ogs_sbi_message_t *recvmsg)
          *   the new request shall be the same as was used for
          *   the previous request.
          */
+#if ISSUE_482
         sqn = (sqn + 32 + 1) & OGS_MAX_SQN;
+#else
+        sqn = (sqn + 32) & OGS_MAX_SQN;
+#endif
+
 
         ogs_uint64_to_buffer(sqn, OGS_SQN_LEN, udm_ue->sqn);
 

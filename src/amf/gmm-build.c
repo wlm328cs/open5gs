@@ -124,14 +124,23 @@ ogs_pkbuf_t *gmm_build_registration_accept(amf_ue_t *amf_ue)
     /* 5GS network feature support */
     registration_accept->presencemask |=
         OGS_NAS_5GS_REGISTRATION_ACCEPT_5GS_NETWORK_FEATURE_SUPPORT_PRESENT;
+#if ISSUE_482
     network_feature_support->length = 1;
+#else
+    network_feature_support->length = 3;
+#endif
     network_feature_support->ims_vops_3gpp = 1;
 
     /* Set T3512 */
     registration_accept->presencemask |= OGS_NAS_5GS_REGISTRATION_ACCEPT_T3512_VALUE_PRESENT;
     t3512_value->length = 1;
+#if ISSUE_482
     t3512_value->unit = OGS_NAS_GRPS_TIMER_3_UNIT_MULTIPLES_OF_1_HH;
     t3512_value->value = 9;
+#else
+    t3512_value->unit = OGS_NAS_GRPS_TIMER_3_UNIT_MULTIPLES_OF_10_MM;
+    t3512_value->value = 6;
+#endif
 
 #if 0
     /* Set T3502 */
@@ -414,10 +423,12 @@ ogs_pkbuf_t *gmm_build_security_mode_command(amf_ue_t *amf_ue)
     ogs_debug("    Selected[Integrity:0x%x Encrypt:0x%x]",
             amf_ue->selected_int_algorithm, amf_ue->selected_enc_algorithm);
 
+#if ISSUE_482
     security_mode_command->presencemask |=
         OGS_NAS_5GS_SECURITY_MODE_COMMAND_IMEISV_REQUEST_PRESENT;
     imeisv_request->type = OGS_NAS_IMEISV_TYPE;
     imeisv_request->value = OGS_NAS_IMEISV_REQUESTED;
+#endif
 
     security_mode_command->presencemask |=
         OGS_NAS_5GS_SECURITY_MODE_COMMAND_ADDITIONAL_5G_SECURITY_INFORMATION_PRESENT;

@@ -555,6 +555,7 @@ ogs_pkbuf_t *ngap_build_initial_context_setup_request(
                 UERadioCapability);
     }
 
+#if ISSUE_482
     if (amf_ue->imeisv_len) {
         ie = CALLOC(1, sizeof(NGAP_InitialContextSetupRequestIEs_t));
         ASN_SEQUENCE_ADD(&InitialContextSetupRequest->protocolIEs, ie);
@@ -573,6 +574,7 @@ ogs_pkbuf_t *ngap_build_initial_context_setup_request(
         MaskedIMEISV->buf[5] = 0xff;
         MaskedIMEISV->buf[6] = 0xff;
     }
+#endif
 
     if (gmmbuf) {
         ie = CALLOC(1, sizeof(NGAP_InitialContextSetupRequestIEs_t));

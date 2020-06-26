@@ -156,5 +156,9 @@ void ogs_nas_5gs_nas_guti_to_mobilty_identity_guti(
             &nas_guti->nas_plmn_id, OGS_PLMN_ID_LEN);
     memcpy(&mobile_identity_guti->amf_id,
             &nas_guti->amf_id, sizeof(ogs_amf_id_t));
+#if ISSUE_482
     mobile_identity_guti->m_tmsi = htobe32(nas_guti->m_tmsi);
+#else
+    mobile_identity_guti->m_tmsi = htobe32(0x01000001);
+#endif
 }

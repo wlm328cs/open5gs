@@ -34,7 +34,8 @@ amf:
         ciphering_order : [ NEA0, NEA1, NEA2 ]
     network_name:
         full: Open5GS
-    amf_name: open5gs-amf0
+    amf_name: amf1.astri.amf.5gc.mnc01.mcc001.3gppnetwork.org
+    relative_capacity: 100
 
 smf:
     sbi:

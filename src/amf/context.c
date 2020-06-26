@@ -491,7 +491,11 @@ int amf_context_parse_config(void)
                                 list2->tai[list2->num].tac.v = tac[0].v;
 
                                 list2->num++;
+#if ISSUE_482
                                 if (list2->num > 1)
+#else
+                                if (list2->num >= 1)
+#endif
                                     list2->type = OGS_TAI2_TYPE;
                                 else
                                     list2->type = OGS_TAI1_TYPE;

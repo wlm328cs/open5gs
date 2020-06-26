@@ -39,6 +39,32 @@ static void test1_func(abts_case *tc, void *data)
 
     uint8_t tmp[OGS_MAX_SDU_LEN];
 
+    const char *_ng_setup_response = "2015"
+        "0055000004000100 311700616d66312e 61737472692e616d 662e3567632e6d6e"
+        "6330312e6d636330 30312e336770706e 6574776f726b2e6f 7267006000080000"
+        "00f1100100410056 4001640050000800 00f11000000008";
+
+    const char *_identity_request = "0004"
+        "4018000003000a00 0200010055000200 0000260005047e00 5b01";
+
+    const char *_authentication_request1 = "0004"
+        "403e000003000a00 0200010055000200 000026002b2a7e00 5600020000213a1f"
+        "a0f51fe50f324f85 22b220fc62a22010 2f9a84aca0608000 9135d2ae4d6f51ad";
+    const char *_authentication_request2 = "0004"
+        "403e000003000a00 0200010055000200 000026002b2a7e00 560102000021cc55"
+        "39bf72824c879e47 e73efc8850212010 5c9bc7e54bcd8000 55e239e441bec5e3";
+
+    const char *_security_mode_command = "0004"
+        "4026000003000a00 0200010055000200 0000260013127e03 d950da91007e005d"
+        "020102f0f0360102";
+
+    const char *_registration_accept = "000e"
+        "00808f000008000a 0002000100550002 0000006e00060404 00100400001c0007"
+        "0000f11001004100 0000020001007700 091c000e00000000 0000005e002097ab"
+        "0be862c90eff91e7 d1e2720243244462 d933a5e01fefc882 048a8d2dbf630026"
+        "40302f7e021fc086 2d017e0042010177 000bf200f1100100 4101000001540740"
+        "00f1100000511502 010121030100005e 0106";
+
     const char *_k_string = "00112233445566778899aabbccddeeff";
     uint8_t k[OGS_KEY_LEN];
     const char *_opc_string = "279eb54971771559879284fddde3ee0c";
@@ -53,8 +79,8 @@ static void test1_func(abts_case *tc, void *data)
         "\"_id\" : { \"$oid\" : \"597223158b8861d7605378c6\" }, "
         "\"imsi\" : \"001010000000001\","
         "\"ambr\" : { "
-          "\"uplink\" : { \"$numberLong\" : \"1024000\" }, "
-          "\"downlink\" : { \"$numberLong\" : \"1024000\" } "
+          "\"uplink\" : { \"$numberLong\" : \"1\" }, "
+          "\"downlink\" : { \"$numberLong\" : \"1\" } "
         "},"
         "\"pdn\" : ["
           "{"
@@ -79,7 +105,7 @@ static void test1_func(abts_case *tc, void *data)
           "\"k\" : \"00112233445566778899aabbccddeeff\", "
           "\"opc\" : \"279eb54971771559879284fddde3ee0c\", "
           "\"amf\" : \"8000\", "
-          "\"sqn\" : { \"$numberLong\" : \"32\" } "
+          "\"sqn\" : { \"$numberLong\" :  \"32\" } "
         "}, "
         "\"subscribed_rau_tau_timer\" : 12,"
         "\"network_access_mode\" : 2, "
@@ -143,7 +169,7 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, gtpu);
 
     /* Send NG-Setup Reqeust */
-    sendbuf = testngap_build_ng_setup_request(0xce, 31);
+    sendbuf = testngap_build_ng_setup_request(0xce, 32);
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
@@ -152,6 +178,9 @@ static void test1_func(abts_case *tc, void *data)
     recvbuf = testgnb_ngap_read(ngap);
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
+    ABTS_TRUE(tc, memcmp(recvbuf->data,
+        OGS_HEX(_ng_setup_response, strlen(_ng_setup_response), tmp),
+        recvbuf->len) == 0);
 
     /********** Insert Subscriber in Database */
     collection = mongoc_client_get_collection(
@@ -214,11 +243,19 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
+    ABTS_TRUE(tc, memcmp(recvbuf->data,
+        OGS_HEX(_identity_request, strlen(_identity_request), tmp),
+        recvbuf->len) == 0);
 
     /* Receive Authentication request */
     recvbuf = testgnb_ngap_read(ngap);
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
+    ABTS_INT_EQUAL(tc, OGS_OK, rv);
+    ABTS_TRUE(tc, memcmp(recvbuf->data,
+        OGS_HEX(_authentication_request1,
+            strlen(_authentication_request1), tmp),
+        recvbuf->len) == 0);
 
     /* Send Authentication failure - SYNCH failure */
     gmmbuf = testgmm_build_authentication_failure(
@@ -233,6 +270,10 @@ static void test1_func(abts_case *tc, void *data)
     recvbuf = testgnb_ngap_read(ngap);
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
+    ABTS_TRUE(tc, memcmp(recvbuf->data,
+        OGS_HEX(_authentication_request2,
+            strlen(_authentication_request2), tmp),
+        recvbuf->len) == 0);
 
     /* Send Authentication response */
     gmmbuf = testgmm_build_authentication_response(&test_ue);
@@ -246,6 +287,9 @@ static void test1_func(abts_case *tc, void *data)
     recvbuf = testgnb_ngap_read(ngap);
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
+    ABTS_TRUE(tc, memcmp(recvbuf->data,
+        OGS_HEX(_security_mode_command, strlen(_security_mode_command), tmp),
+        recvbuf->len) == 0);
 
     /* Send Security mode complete */
     gmmbuf = testgmm_build_security_mode_complete(&test_ue, nasbuf);
@@ -259,6 +303,9 @@ static void test1_func(abts_case *tc, void *data)
     recvbuf = testgnb_ngap_read(ngap);
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
+    ABTS_TRUE(tc, memcmp(recvbuf->data,
+        OGS_HEX(_registration_accept, strlen(_registration_accept), tmp),
+        recvbuf->len) == 0);
 
     /* Send UE radio capability info indication */
     sendbuf = testngap_build_ue_radio_capability_info_indication(&test_ue);

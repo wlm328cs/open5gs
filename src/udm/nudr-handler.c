@@ -32,6 +32,7 @@ bool udm_nudr_dr_handle_subscription_authentication(
 #if 0
     const char *tmp[1] = "de8ca9df474091fe4e9263c5daa907e9";
     const char *tmp[1] = "cc3766b98a8031a7286a68c7f577ed2e"; /* For test */
+#endif
 
     /* ISSUE-482 */
     const char *tmp[2] = {
@@ -39,7 +40,6 @@ bool udm_nudr_dr_handle_subscription_authentication(
         "cc5539bf72824c879e47e73efc885021"
     };
     static int step = 0;
-#endif
 
     uint8_t autn[OGS_AUTN_LEN];
     uint8_t ik[OGS_KEY_LEN];
@@ -158,7 +158,7 @@ bool udm_nudr_dr_handle_subscription_authentication(
             AuthenticationInfoResult.auth_type = udm_ue->auth_type;
 
             ogs_random(udm_ue->rand, OGS_RAND_LEN);
-#if 0
+#if 1
             OGS_HEX(tmp[step], strlen(tmp[step]), udm_ue->rand);
             if (step == 0) step = 1; /* For supporting authentication failure */
             else step = 0;

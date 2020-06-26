@@ -194,6 +194,7 @@ ED6(uint8_t mpsi:1;,
 ED3(uint8_t spare:6;,
     uint8_t mcsi:1;,
     uint8_t emcn :1;)
+    uint8_t spare2;
 } ogs_nas_5gs_network_feature_support_t;
 
 /* 9.11.3.6 5GS registration result
