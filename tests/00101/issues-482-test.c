@@ -295,8 +295,6 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(50);
-
     /* Send Registration complete */
     gmmbuf = testgmm_build_registration_complete(&test_ue);
     ABTS_PTR_NOTNULL(tc, gmmbuf);
@@ -310,7 +308,6 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
 
-#if 0
     /* Send PDU session establishment request */
     gsmbuf = testgsm_build_pdu_session_establishment_request(&test_sess);
     ABTS_PTR_NOTNULL(tc, gsmbuf);
@@ -323,6 +320,8 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
     /* Receive PDU session establishment accept */
+    ogs_msleep(100);
+
     recvbuf = testgnb_ngap_read(ngap);
     ABTS_PTR_NOTNULL(tc, recvbuf);
     testngap_recv(&test_ue, recvbuf);
@@ -333,15 +332,11 @@ static void test1_func(abts_case *tc, void *data)
     rv = testgnb_gtpu_send(gtpu, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
 
-    ogs_msleep(50);
-
     /* Send PDU session resource setup response */
     sendbuf = testngap_build_pdu_session_resource_setup_response(&test_sess);
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
-
-    ogs_msleep(50);
 
     /* Receive GTP-U ICMP Packet */
     recvbuf = testgnb_gtpu_read(gtpu);
@@ -359,7 +354,7 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, recvbuf);
     ogs_pkbuf_free(recvbuf);
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /* Send De-registration request */
     gmmbuf = testgmm_build_de_registration_request(&test_ue, 1);
@@ -379,9 +374,8 @@ static void test1_func(abts_case *tc, void *data)
     ABTS_PTR_NOTNULL(tc, sendbuf);
     rv = testgnb_ngap_send(ngap, sendbuf);
     ABTS_INT_EQUAL(tc, OGS_OK, rv);
-#endif
 
-    ogs_msleep(50);
+    ogs_msleep(100);
 
     /********** Remove Subscriber in Database */
     doc = BCON_NEW("imsi", BCON_UTF8(test_ue.imsi));
