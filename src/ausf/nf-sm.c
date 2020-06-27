@@ -62,20 +62,23 @@ void ausf_nf_state_initial(ogs_fsm_t *s, ausf_event_t *e)
     ogs_assert(nf_instance);
     ogs_assert(nf_instance->id);
 
-    nf_instance->t_registration_interval = ogs_timer_add(ausf_self()->timer_mgr,
-            ausf_timer_nf_instance_registration_interval, nf_instance);
-    ogs_assert(nf_instance->t_registration_interval);
-    nf_instance->t_heartbeat_interval = ogs_timer_add(ausf_self()->timer_mgr,
-            ausf_timer_nf_instance_heartbeat_interval, nf_instance);
-    ogs_assert(nf_instance->t_heartbeat_interval);
-    nf_instance->t_heartbeat = ogs_timer_add(ausf_self()->timer_mgr,
-            ausf_timer_nf_instance_heartbeat, nf_instance);
-    ogs_assert(nf_instance->t_heartbeat);
     nf_instance->t_validity = ogs_timer_add(ausf_self()->timer_mgr,
             ausf_timer_nf_instance_validity, nf_instance);
     ogs_assert(nf_instance->t_validity);
 
     if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
+        nf_instance->t_registration_interval = ogs_timer_add(
+                ausf_self()->timer_mgr,
+                ausf_timer_nf_instance_registration_interval, nf_instance);
+        ogs_assert(nf_instance->t_registration_interval);
+        nf_instance->t_heartbeat_interval = ogs_timer_add(
+                ausf_self()->timer_mgr,
+                ausf_timer_nf_instance_heartbeat_interval, nf_instance);
+        ogs_assert(nf_instance->t_heartbeat_interval);
+        nf_instance->t_heartbeat = ogs_timer_add(ausf_self()->timer_mgr,
+                ausf_timer_nf_instance_heartbeat, nf_instance);
+        ogs_assert(nf_instance->t_heartbeat);
+
         OGS_FSM_TRAN(s, &ausf_nf_state_will_register);
     } else {
         OGS_FSM_TRAN(s, &ausf_nf_state_registered);
@@ -94,9 +97,11 @@ void ausf_nf_state_final(ogs_fsm_t *s, ausf_event_t *e)
     nf_instance = e->sbi.data;
     ogs_assert(nf_instance);
 
-    ogs_timer_delete(nf_instance->t_registration_interval);
-    ogs_timer_delete(nf_instance->t_heartbeat_interval);
-    ogs_timer_delete(nf_instance->t_heartbeat);
+    if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
+        ogs_timer_delete(nf_instance->t_registration_interval);
+        ogs_timer_delete(nf_instance->t_heartbeat_interval);
+        ogs_timer_delete(nf_instance->t_heartbeat);
+    }
     ogs_timer_delete(nf_instance->t_validity);
 }
 
